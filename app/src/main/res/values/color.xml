@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="AppPrimaryColor" type="color">#6094ff</item>
+    <item name="AppSecondaryColor" type="color">#004A7F</item>
+</resources>
