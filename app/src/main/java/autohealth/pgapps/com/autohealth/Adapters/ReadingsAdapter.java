@@ -23,6 +23,7 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
     private Activity mContext;
     private List<ChildInfoModel> readingList;
 
+
     public ReadingsAdapter(Activity mainActivity, List<ChildInfoModel> readingList) {
 
         this.mContext = mainActivity;
@@ -31,7 +32,9 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_layout, parent, false);
+
         ViewHolder pvh = new ViewHolder(v);
         return pvh;
     }
