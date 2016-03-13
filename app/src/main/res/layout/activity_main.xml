@@ -31,10 +31,13 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <android.support.v7.widget.RecyclerView android:layout_width="match_parent"
+    <android.support.v7.widget.RecyclerView
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:padding="10dp"
+        android:background="@android:color/darker_gray"
         android:id="@+id/mRecyclerView"/>
 
     <RelativeLayout
@@ -42,6 +45,7 @@
         android:layout_height="match_parent"
         android:id="@+id/relLayoutDefault"
         android:layout_below="@+id/toolbar"
+        android:visibility="invisible"
         android:background="@android:color/white">
         <ImageView
             android:layout_width="wrap_content"

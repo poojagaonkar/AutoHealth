@@ -61,6 +61,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             mAdapter = new ReadingsAdapter(MainActivity.this, readingList);
             mRecyclerView.setAdapter(mAdapter);
         }
+        else
+        {
+            noItemLayout.setVisibility(View.VISIBLE);
+        }
 
 
         btnAdd.setOnClickListener(new View.OnClickListener() {

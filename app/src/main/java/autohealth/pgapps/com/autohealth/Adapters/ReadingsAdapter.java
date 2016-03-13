@@ -67,10 +67,6 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
         return readingList.size();
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
