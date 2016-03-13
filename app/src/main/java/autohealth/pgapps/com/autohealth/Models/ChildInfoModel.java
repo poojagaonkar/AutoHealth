@@ -6,7 +6,11 @@ package autohealth.pgapps.com.autohealth.Models;
 public class ChildInfoModel {
 
 
-    public ChildInfoModel(double previousKms, double kilometers,double fuelQty ,double fuelCost,double mileage, double totalCost, boolean isFullTank ) {
+    public ChildInfoModel()
+    {
+
+    }
+    public ChildInfoModel(int id, double previousKms, double kilometers,double fuelQty ,double fuelCost,double mileage, double totalCost, boolean isFullTank ) {
         this.Kilometers = kilometers;
         this.PreviousKms = previousKms;
         this.FuelCost = fuelCost;
@@ -14,7 +18,28 @@ public class ChildInfoModel {
         this.TotalCost = totalCost;
         this.isFullTank = isFullTank;
         this.Mileage = mileage;
+        this.ID = id;
     }
+    public ChildInfoModel( double previousKms, double kilometers,double fuelQty ,double fuelCost,double mileage, double totalCost, boolean isFullTank ) {
+        this.Kilometers = kilometers;
+        this.PreviousKms = previousKms;
+        this.FuelCost = fuelCost;
+        this.Fuelqty = fuelQty;
+        this.TotalCost = totalCost;
+        this.isFullTank = isFullTank;
+        this.Mileage = mileage;
+
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public int ID;
 
     public double Kilometers;
     public double getKilometers() {
