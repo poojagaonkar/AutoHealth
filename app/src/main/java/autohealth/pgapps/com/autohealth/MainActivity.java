@@ -15,12 +15,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 
 import java.util.List;
 
 import autohealth.pgapps.com.autohealth.Adapters.ReadingsAdapter;
 import autohealth.pgapps.com.autohealth.Helpers.DatabaseHandler;
+import autohealth.pgapps.com.autohealth.Helpers.DialogHelper;
 import autohealth.pgapps.com.autohealth.Models.ChildInfoModel;
 
 
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         }
 
 
+
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +92,14 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
                 dialog = builder.create();
                 dialog.show();
+
+                ETKM.setOnFocusChangeListener(MainActivity.this);
+                ETFuelCost.setOnFocusChangeListener(MainActivity.this);
+                ETFuelQty.setOnFocusChangeListener(MainActivity.this);
+                ETMileage.setOnFocusChangeListener(MainActivity.this);
+                ETTotalCost.setOnFocusChangeListener(MainActivity.this);
+
+
 
                 btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -128,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                             readingList = dbHandler.getAllReadings();
 
 
-                            if(readingList.size() >0) {
+                            if (readingList.size() > 0) {
 
                                 noItemLayout.setVisibility(View.GONE);
                                 mAdapter = new ReadingsAdapter(MainActivity.this, readingList);
@@ -138,66 +149,11 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                             }
 
 
-                            /*for (ChildInfoModel cn : contacts) {
-                                String log = "Id: " + cn.getID() + " ,Previous Km: " + cn.getPreviousKms() + " ,Kms: " + cn.getKilometers()
-                                        + " ,FuelQty: " + cn.getFuelqty()
-                                        + " ,FuelCost: " + cn.getFuelCost()
-                                        + " ,Mileage: " + cn.getMileage()
-                                        + " ,TotalCost: " + cn.getTotalCost()
-                                        + " ,FullTank: " + cn.isFullTank();
-                                // Writing Contacts to log
-                                Toast.makeText(MainActivity.this,"Name: " + log, Toast.LENGTH_LONG).show();
-
-                            }*/
                         }
                     }
                 });
 
-               /* ETKM.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                        Kms = 0;
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        try {
-                            Kms = Double.parseDouble(ETKM.getText().toString());
-                        } catch (NumberFormatException e) {
-                            Kms = 0;
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-
-                        if (Kms <= 0) {
-                            ETFuelQty.setEnabled(false);
-                            ETTotalCost.setEnabled(false);
-                            ETMileage.setEnabled(false);
-                            ETFuelCost.setEnabled(false);
-                            AlertDialog.Builder mAlert = new AlertDialog.Builder(MainActivity.this);
-                            mAlert.setTitle("Message");
-                            mAlert.setMessage("Enter Kms before proceeding");
-                            mAlert.create().show();
-                        } else {
-
-                            ETFuelQty.setEnabled(true);
-                            ETTotalCost.setEnabled(true);
-                            ETMileage.setEnabled(true);
-                            ETFuelCost.setEnabled(true);
-                        }
-                    }
-                });*/
-
-               /* ETKM.setOnFocusChangeListener(MainActivity.this);
-                ETFuelCost.setOnFocusChangeListener(MainActivity.this);
-                ETFuelQty.setOnFocusChangeListener(MainActivity.this);
-                ETMileage.setOnFocusChangeListener(MainActivity.this);
-                ETTotalCost.setOnFocusChangeListener(MainActivity.this);*/
 
 
             }
@@ -210,36 +166,98 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     public void onFocusChange(View v, boolean hasFocus) {
 
         double kms = 0;
-
+        DialogHelper dHelper = new DialogHelper();
         switch (v.getId())
         {
             case R.id.ETKms:
 
-                try {
-                    kms = Double.parseDouble(ETKM.getText().toString());
-                } catch (NumberFormatException e) {
-                    kms = 0;
-                }
+                if (!hasFocus) {
+                    try {
+                        if(ETKM.getText().toString() != "")
 
-                if(kms <= 0)
-                {
-                    AlertDialog.Builder mAlert = new AlertDialog.Builder(MainActivity.this);
-                    mAlert.setTitle("Message");
-                    mAlert.setMessage("Enter Kms before proceeding");
-                    mAlert.create().show();
+                            Kms = Double.parseDouble(ETKM.getText().toString());
+                        if (Kms <= 0) {
+                            dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be blank or less than 0");
+                        }
+                    } catch (Exception e1) {
+                        dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be blank or less than 0");
+
+                    }
                 }
 
                 break;
             case R.id.ETFuelQty:
+                if (hasFocus) {
+
+                    if (FuelQty ==0 &&(FuelCost > 0 && TotalCost > 0)) {
+
+                        FuelQty = TotalCost / FuelCost;
+                        ETFuelQty.setText(String.valueOf(FuelQty));
+
+                    }
+                }
+                else {
+                        try {
+                            if(ETFuelQty.getText().toString() != "") {
+                                FuelQty = Double.parseDouble(ETFuelQty.getText().toString());
+                            }
+
+                        } catch (Exception e1) {
+                            dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be blank or less than 0");
+
+                        }
+                    }
+
 
                 break;
             case R.id.ETFuelCost:
+                if (hasFocus) {
+
+                    if (FuelCost ==0 &&(FuelQty > 0 && TotalCost > 0)) {
+
+                        FuelCost = TotalCost / FuelQty;
+                        ETFuelCost.setText(String.valueOf(FuelCost));
+
+                    }
+                }
+                else {
+                    try {
+                        if(ETFuelCost.getText().toString() != "") {
+                            FuelCost = Double.parseDouble(ETFuelCost.getText().toString());
+                        }
+
+                    } catch (Exception e1) {
+                        dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be blank or less than 0");
+
+                    }
+                }
 
                 break;
             case R.id.ETMileage:
 
                 break;
             case R.id.ETTotalCost:
+
+                if (hasFocus) {
+
+                    if (TotalCost ==0 &&(FuelQty > 0 && FuelCost > 0)) {
+
+                        TotalCost = FuelCost  * FuelQty;
+                        ETTotalCost.setText(String.valueOf(TotalCost));
+
+                    }
+                }
+                else {
+                    try {
+                        if(ETTotalCost.getText().toString() != "") {
+                            TotalCost = Double.parseDouble(ETTotalCost.getText().toString());
+                        }
+
+                    } catch (Exception e1) {
+                        dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be blank or less than 0");
+
+                    }
+                }
 
                 break;
         }
