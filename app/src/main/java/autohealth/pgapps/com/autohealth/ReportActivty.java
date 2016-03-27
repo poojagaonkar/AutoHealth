@@ -33,7 +33,11 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import autohealth.pgapps.com.autohealth.Custom.MyMarkerView;
@@ -119,12 +123,30 @@ public class ReportActivty extends AppCompatActivity{
 
     private LineData getData(int count, float range) {
 
-     String[] mMonths = new String[]{"January","February","March","April","May","June","July","August","Spetember"
+    /* String[] mMonths = new String[]{"January","February","March","April","May","June","July","August","Spetember"
      ,"October","November","December"};
+*/
+        List<Date> mDates = new ArrayList<Date>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        for(ChildInfoModel data: readingList)
+        {
+            try {
+                Date dateObj = sdf.parse(data.getCreatedDate());
+                mDates.add(dateObj);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
+        }
         ArrayList<String> xVals = new ArrayList<String>();
         for (int i = 0; i < count; i++) {
-            xVals.add(mMonths[i % 12]);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(mDates.get(i));
+            int mYear = cal.get(Calendar.YEAR);
+            int mMonth = cal.get(Calendar.MONTH) + 1;
+            int mDate = cal.get(Calendar.DAY_OF_MONTH);
+            String dateString = String.valueOf(mDate) +"/" + String.valueOf(mMonth)+"/" + String.valueOf(mYear);
+            xVals.add(dateString);
         }
 
         ArrayList<Entry> yVals = new ArrayList<Entry>();

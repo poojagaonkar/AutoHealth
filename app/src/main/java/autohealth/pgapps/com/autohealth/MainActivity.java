@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     private ImageButton btnReport;
     private  DateFormat dateFormat;
     private String currentDate;
+    private double lastKmReading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             noItemLayout.setVisibility(View.GONE);
             mAdapter = new ReadingsAdapter(MainActivity.this, readingList);
             mRecyclerView.setAdapter(mAdapter);
+            lastKmReading = readingList.get(0).getKilometers();
         }
         else
         {
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 chkfullTank = (CheckBox) layout.findViewById(R.id.CBFullTank);
                 TVPreviousKm = (TextView) layout.findViewById(R.id.txtPreviousKm);
 
-                String lastKm = "Previous Km reading: " + String.valueOf(readingList.get(0).getKilometers());
+                String lastKm = "Previous Km reading: " + String.valueOf(lastKmReading);
                 TVPreviousKm.setText(lastKm);
                 TVPreviousKm.setTextColor(Color.RED);
                 //Building dialog
@@ -211,6 +213,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                             Kms = Double.parseDouble(ETKM.getText().toString());
                         if (Kms <= 0) {
                             dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be blank or less than 0");
+                        }
+                        if( Kms <= lastKmReading)
+                        {
+                            dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be less than or equal to previous km reading");
                         }
                     } catch (Exception e1) {
                         dHelper.CreateErrorDialog(MainActivity.this,"Error","Kilometers cannot be blank or less than 0");

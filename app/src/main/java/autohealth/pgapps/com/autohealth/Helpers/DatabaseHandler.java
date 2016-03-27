@@ -18,7 +18,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Database Name
     private static final String DATABASE_NAME = "FuelDatabase";
@@ -35,7 +35,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_MILEAGE = "mileage";
     private static final String KEY_TOTALCOST = "totalCost";
     private static final String KEY_ISFULLTANK = "isfullTank";
-    private static final String KEY_CREATIONDATE = "isfullTank";
+    private static final String KEY_CREATIONDATE = "creationDate";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION);
@@ -101,12 +101,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ChildInfoModel data = new ChildInfoModel(Integer.parseInt(cursor.getString(0)),
                 Double.parseDouble(cursor.getString(1)),
                 Double.parseDouble(cursor.getString(1)),
-                Double.parseDouble(cursor.getString(2)),
                 Double.parseDouble(cursor.getString(3)),
                 Double.parseDouble(cursor.getString(4)),
                 Double.parseDouble(cursor.getString(5)),
-                Boolean.parseBoolean(cursor.getString(6)),
-                cursor.getString(7));
+                Double.parseDouble(cursor.getString(6)),
+                Boolean.parseBoolean(cursor.getString(7)),
+                cursor.getString(8));
 
         return data;
     }
@@ -127,12 +127,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 mModel.setID(Integer.parseInt(cursor.getString(0)));
                 mModel.setPreviousKms(Double.parseDouble(cursor.getString(1)));
                 mModel.setKilometers(Double.parseDouble(cursor.getString(1)));
-                mModel.setFuelqty(Double.parseDouble(cursor.getString(2)));
-                mModel.setFuelCost(Double.parseDouble(cursor.getString(3)));
-                 mModel.setTotalCost(Double.parseDouble(cursor.getString(4)));
-                mModel.setMileage(Double.parseDouble(cursor.getString(5)));
-                mModel.setIsFullTank(Boolean.parseBoolean(cursor.getString(6)));
-                mModel.setCreatedDate(cursor.getString(7));
+                mModel.setFuelqty(Double.parseDouble(cursor.getString(3)));
+                mModel.setFuelCost(Double.parseDouble(cursor.getString(4)));
+                 mModel.setTotalCost(Double.parseDouble(cursor.getString(5)));
+                mModel.setMileage(Double.parseDouble(cursor.getString(6)));
+                mModel.setIsFullTank(Boolean.parseBoolean(cursor.getString(7)));
+                mModel.setCreatedDate(cursor.getString(8));
                 // Adding reading to list
                 readingList.add(mModel);
             } while (cursor.moveToNext());
