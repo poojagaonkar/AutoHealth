@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
 
         this.mContext = mainActivity;
         this.readingList = readingList;
+        Collections.reverse(this.readingList);
     }
 
     @Override

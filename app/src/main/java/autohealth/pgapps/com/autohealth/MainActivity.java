@@ -3,6 +3,7 @@ package autohealth.pgapps.com.autohealth;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,12 +17,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     private LinearLayoutManager mLinearManager;
     private AlertDialog dialog;
     private EditText ETKM, ETFuelQty, ETFuelCost, ETTotalCost, ETMileage;
+    private TextView TVPreviousKm;
     private CheckBox chkfullTank;
     private boolean isFullTank;
     private double Kms, FuelQty, FuelCost, TotalCost, Mileage;
@@ -94,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 final Button btnCancel = (Button) layout.findViewById(R.id.btnCancel);
                 final Button btnSave = (Button) layout.findViewById(R.id.btnSave);
                 chkfullTank = (CheckBox) layout.findViewById(R.id.CBFullTank);
+                TVPreviousKm = (TextView) layout.findViewById(R.id.txtPreviousKm);
+
+                String lastKm = "Previous Km reading: " + String.valueOf(readingList.get(0).getKilometers());
+                TVPreviousKm.setText(lastKm);
+                TVPreviousKm.setTextColor(Color.RED);
                 //Building dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setView(layout);
@@ -154,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
 
                             if (readingList.size() > 0) {
+
 
                                 noItemLayout.setVisibility(View.GONE);
                                 mAdapter = new ReadingsAdapter(MainActivity.this, readingList);
