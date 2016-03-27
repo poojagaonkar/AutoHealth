@@ -20,6 +20,14 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:textColor="#ffffff"
             android:textStyle="bold" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+          
+            android:layout_gravity="right|center_horizontal"
+            android:src="@mipmap/ic_trending"
+            android:id="@+id/btnReport"
+            android:background="@android:color/transparent"/>
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -27,7 +35,11 @@
             android:id="@+id/btnAdd"
             android:layout_gravity="right|center_horizontal"
             android:src="@mipmap/ic_add"
+            android:layout_marginLeft="10dp"
             android:background="@android:color/transparent" />
+
+
+
 
     </android.support.v7.widget.Toolbar>
 

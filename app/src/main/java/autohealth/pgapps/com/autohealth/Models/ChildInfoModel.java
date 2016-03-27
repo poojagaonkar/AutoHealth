@@ -10,7 +10,7 @@ public class ChildInfoModel {
     {
 
     }
-    public ChildInfoModel(int id, double previousKms, double kilometers,double fuelQty ,double fuelCost,double mileage, double totalCost, boolean isFullTank ) {
+    public ChildInfoModel(int id, double previousKms, double kilometers,double fuelQty ,double fuelCost,double mileage, double totalCost, boolean isFullTank, String createdDate ) {
         this.Kilometers = kilometers;
         this.PreviousKms = previousKms;
         this.FuelCost = fuelCost;
@@ -19,8 +19,9 @@ public class ChildInfoModel {
         this.isFullTank = isFullTank;
         this.Mileage = mileage;
         this.ID = id;
+        this.CreatedDate = createdDate;
     }
-    public ChildInfoModel( double previousKms, double kilometers,double fuelQty ,double fuelCost,double mileage, double totalCost, boolean isFullTank ) {
+    public ChildInfoModel( double previousKms, double kilometers,double fuelQty ,double fuelCost,double mileage, double totalCost, boolean isFullTank,  String createdDate ) {
         this.Kilometers = kilometers;
         this.PreviousKms = previousKms;
         this.FuelCost = fuelCost;
@@ -28,9 +29,19 @@ public class ChildInfoModel {
         this.TotalCost = totalCost;
         this.isFullTank = isFullTank;
         this.Mileage = mileage;
+        this.CreatedDate = createdDate;
 
     }
 
+    public String getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        CreatedDate = createdDate;
+    }
+
+    public String CreatedDate;
     public int getID() {
         return ID;
     }
@@ -100,5 +111,5 @@ public class ChildInfoModel {
         this.isFullTank = isFullTank;
     }
 
-    
+
 }

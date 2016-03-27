@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import autohealth.pgapps.com.autohealth.MainActivity;
@@ -61,6 +65,19 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
             holder.TVFullTank.setTextColor(Color.RED);
         }
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        try {
+            Date creationDate = sdf.parse(data.getCreatedDate());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(creationDate);
+            int mYear = cal.get(Calendar.YEAR);
+            int mMonth = cal.get(Calendar.MONTH) + 1;
+            int mDate = cal.get(Calendar.DAY_OF_MONTH);
+
+            holder.TVDate.setText("Date: "+ String.valueOf(mDate) +"/" + String.valueOf(mMonth)+"/" + String.valueOf(mYear));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -80,6 +97,7 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
         public TextView TVTotalCost;
         public TextView TVMileage;
         public TextView TVFullTank;
+        public TextView TVDate;
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -89,6 +107,7 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
             TVTotalCost = (TextView)itemView.findViewById(R.id.TVTotalCost);
             TVMileage =(TextView)itemView.findViewById(R.id.TVMileage);
             TVFullTank =(TextView)itemView.findViewById(R.id.TVFullTank);
+            TVDate = (TextView)itemView.findViewById(R.id.TVDate);
         }
     }
 

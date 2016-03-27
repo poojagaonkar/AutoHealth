@@ -1,6 +1,7 @@
 package autohealth.pgapps.com.autohealth;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import autohealth.pgapps.com.autohealth.Adapters.ReadingsAdapter;
@@ -41,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     private ReadingsAdapter mAdapter;
     private RelativeLayout noItemLayout;
     private List<ChildInfoModel> readingList;
+    private ImageButton btnReport;
+    private  DateFormat dateFormat;
+    private String currentDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView)findViewById(R.id.mRecyclerView);
         btnAdd = (ImageButton)findViewById(R.id.btnAdd);
+        btnReport = (ImageButton)findViewById(R.id.btnReport);
         noItemLayout = (RelativeLayout)findViewById(R.id.relLayoutDefault);
 
         mLinearManager = new LinearLayoutManager(this);
@@ -99,7 +108,9 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 ETMileage.setOnFocusChangeListener(MainActivity.this);
                 ETTotalCost.setOnFocusChangeListener(MainActivity.this);
 
-
+                dateFormat= new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Calendar cal = Calendar.getInstance();
+                currentDate = dateFormat.format(cal.getTime());
 
                 btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -132,7 +143,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                             mAlert.create().show();
                             return;
                         } else {
-                            dbHandler.addReading(new ChildInfoModel(Kms, Kms, FuelQty, FuelCost, Mileage, TotalCost, isFullTank));
+
+
+
+                            dbHandler.addReading(new ChildInfoModel(Kms, Kms, FuelQty, FuelCost, Mileage, TotalCost, isFullTank , currentDate));
 
                             // Reading all contacts
                             Log.d("Reading: ", "Reading all contacts..");
@@ -159,6 +173,15 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             }
         });
 
+
+        btnReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent in = new Intent(MainActivity.this,ReportActivty.class);
+                startActivity(in);
+            }
+        });
     }
 
 
