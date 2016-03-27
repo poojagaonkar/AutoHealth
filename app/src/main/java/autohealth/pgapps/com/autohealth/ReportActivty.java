@@ -150,6 +150,7 @@ public class ReportActivty extends AppCompatActivity{
         }
 
         ArrayList<Entry> yVals = new ArrayList<Entry>();
+        ArrayList<Entry> yMileage = new ArrayList<Entry>();
 
         for (int i = 0; i < count; i++) {
            ChildInfoModel data = readingList.get(i);
@@ -157,20 +158,32 @@ public class ReportActivty extends AppCompatActivity{
             yVals.add(new Entry(val, i));
         }
 
-        // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(yVals, "DataSet 1");
-        // set1.setFillAlpha(110);
-        // set1.setFillColor(Color.RED);
+        for (int i = 0; i < count; i++) {
+            ChildInfoModel data = readingList.get(i);
+            float val = (float)data.getMileage();
+            yMileage.add(new Entry(val, i));
+        }
 
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(yVals, "Fuel Cost");
         set1.setLineWidth(1.75f);
         set1.setCircleRadius(3f);
         set1.setColor(Color.WHITE);
         set1.setCircleColor(Color.WHITE);
         set1.setHighLightColor(Color.WHITE);
-        set1.setDrawValues(false);
+        set1.setDrawValues(true);
+
+        LineDataSet set2 = new LineDataSet(yMileage, "Mileage");
+        set1.setLineWidth(1.75f);
+        set1.setCircleRadius(3f);
+        set1.setColor(Color.BLACK);
+        set1.setCircleColor(Color.BLACK);
+        set1.setHighLightColor(Color.BLACK);
+        set1.setDrawValues(true);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
         dataSets.add(set1); // add the datasets
+        dataSets.add(set2);
 
         // create a data object with the datasets
         LineData data = new LineData(xVals, dataSets);
