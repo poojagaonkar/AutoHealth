@@ -18,7 +18,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     // Database Name
     private static final String DATABASE_NAME = "FuelDatabase";
@@ -36,9 +36,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TOTALCOST = "totalCost";
     private static final String KEY_ISFULLTANK = "isfullTank";
     private static final String KEY_CREATIONDATE = "creationDate";
+    private boolean isFullTank;
 
     public DatabaseHandler(Context context) {
-        super(context, DATABASE_NAME , null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_FUELCOST + " DOUBLE,"
                 + KEY_TOTALCOST + " DOUBLE,"
                 + KEY_MILEAGE + " DOUBLE,"
-                +KEY_ISFULLTANK + " BOOLEAN,"
+                +KEY_ISFULLTANK + " INTEGER,"
                 +KEY_CREATIONDATE + " TEXT"
                 + ")";
         db.execSQL(CREATE_FUEL_TABLE);
@@ -92,12 +93,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     ChildInfoModel getReading(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_FUEL, new String[] { KEY_ID,
-                        KEY_KM, KEY_FUELQTY, KEY_FUELCOST,KEY_TOTALCOST,KEY_MILEAGE,KEY_ISFULLTANK,KEY_CREATIONDATE }, KEY_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_FUEL, new String[]{KEY_ID,
+                        KEY_KM, KEY_FUELQTY, KEY_FUELCOST, KEY_TOTALCOST, KEY_MILEAGE, KEY_ISFULLTANK, KEY_CREATIONDATE}, KEY_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
+        int fulltank = cursor.getInt(7);
+        if(fulltank == 0 ) {
+            isFullTank = false;
+        } else
+        {
+            isFullTank = true;
+        }
         ChildInfoModel data = new ChildInfoModel(Integer.parseInt(cursor.getString(0)),
                 Double.parseDouble(cursor.getString(1)),
                 Double.parseDouble(cursor.getString(1)),
@@ -105,7 +113,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 Double.parseDouble(cursor.getString(4)),
                 Double.parseDouble(cursor.getString(5)),
                 Double.parseDouble(cursor.getString(6)),
-                Boolean.parseBoolean(cursor.getString(7)),
+                isFullTank,
                 cursor.getString(8));
 
         return data;
@@ -124,14 +132,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 ChildInfoModel mModel = new ChildInfoModel();
-                mModel.setID(Integer.parseInt(cursor.getString(0)));
-                mModel.setPreviousKms(Double.parseDouble(cursor.getString(1)));
-                mModel.setKilometers(Double.parseDouble(cursor.getString(1)));
-                mModel.setFuelqty(Double.parseDouble(cursor.getString(3)));
-                mModel.setFuelCost(Double.parseDouble(cursor.getString(4)));
-                 mModel.setTotalCost(Double.parseDouble(cursor.getString(5)));
-                mModel.setMileage(Double.parseDouble(cursor.getString(6)));
-                mModel.setIsFullTank(Boolean.parseBoolean(cursor.getString(7)));
+                mModel.setID(cursor.getInt(0));
+                mModel.setPreviousKms(cursor.getDouble(1));
+                mModel.setKilometers(cursor.getDouble(1));
+                mModel.setFuelqty(cursor.getDouble(3));
+                mModel.setFuelCost(cursor.getDouble(4));
+                 mModel.setTotalCost(cursor.getDouble(5));
+                mModel.setMileage(cursor.getDouble(6));
+
+                int fulltank = cursor.getInt(7);
+                if(fulltank == 0 ) {
+                    mModel.setIsFullTank(false);
+                }
+                else
+                {
+                    mModel.setIsFullTank(true);
+                }
                 mModel.setCreatedDate(cursor.getString(8));
                 // Adding reading to list
                 readingList.add(mModel);

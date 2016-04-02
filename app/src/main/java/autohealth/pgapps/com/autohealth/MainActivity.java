@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
@@ -34,7 +36,7 @@ import autohealth.pgapps.com.autohealth.Helpers.DialogHelper;
 import autohealth.pgapps.com.autohealth.Models.ChildInfoModel;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener{
+public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, CompoundButton.OnCheckedChangeListener{
 
     private  RecyclerView mRecyclerView;
     private ImageButton btnAdd;
@@ -113,21 +115,32 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 dialog = builder.create();
                 dialog.show();
 
+                if (chkfullTank.isChecked()) {
+                    isFullTank = true;
+                } else {
+                    isFullTank = false;
+                }
+
+
                 ETKM.setOnFocusChangeListener(MainActivity.this);
                 ETFuelCost.setOnFocusChangeListener(MainActivity.this);
                 ETFuelQty.setOnFocusChangeListener(MainActivity.this);
                 ETMileage.setOnFocusChangeListener(MainActivity.this);
                 ETTotalCost.setOnFocusChangeListener(MainActivity.this);
+                chkfullTank.setOnCheckedChangeListener(MainActivity.this);
 
                 dateFormat= new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Calendar cal = Calendar.getInstance();
                 currentDate = dateFormat.format(cal.getTime());
+
+
 
                 btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                         dialog.dismiss();
+                        dialog = null;
                     }
                 });
                 btnSave.setOnClickListener(new View.OnClickListener() {
@@ -141,11 +154,6 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                         TotalCost = Double.parseDouble(ETTotalCost.getText().toString());
                         Mileage = Double.parseDouble(ETMileage.getText().toString());
 
-                        if (chkfullTank.isChecked()) {
-                            isFullTank = true;
-                        } else {
-                            isFullTank = false;
-                        }
 
                         if (Kms <= 0) {
                             AlertDialog.Builder mAlert = new AlertDialog.Builder(MainActivity.this);
@@ -172,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                                 mAdapter.notifyDataSetChanged();
                                 mRecyclerView.setAdapter(mAdapter);
                                 dialog.dismiss();
+                                dialog = null;
                             }
 
 
@@ -273,6 +282,26 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
                 break;
             case R.id.ETMileage:
+                if (hasFocus) {
+
+                    if (FuelQty > 0 && Kms > 0 && isFullTank) {
+                        try {
+                            double prevKm = readingList.get(readingList.size() - 1).getKilometers();
+                            Mileage = (Kms - prevKm) / FuelQty;
+                            ETMileage.setText(String.valueOf(Mileage));
+                        }
+                        catch (Exception ex)
+                        {
+                            ex.printStackTrace();
+                        }
+                    }
+                    else
+                    {
+                        dHelper.CreateErrorDialog(this,"Error","Have you filled the tank completely?");
+                    }
+                }
+
+
 
                 break;
             case R.id.ETTotalCost:
@@ -299,6 +328,19 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 }
 
                 break;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+        if(isChecked)
+        {
+            isFullTank = true;
+        }
+        else
+        {
+            isFullTank = false;
         }
     }
 }
