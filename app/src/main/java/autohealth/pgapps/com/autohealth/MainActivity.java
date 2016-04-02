@@ -115,12 +115,9 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 dialog = builder.create();
                 dialog.show();
 
-                if (chkfullTank.isChecked()) {
-                    isFullTank = true;
-                } else {
-                    isFullTank = false;
-                }
 
+                ETMileage.setEnabled(false);
+                ETMileage.setBackgroundColor(Color.LTGRAY);
 
                 ETKM.setOnFocusChangeListener(MainActivity.this);
                 ETFuelCost.setOnFocusChangeListener(MainActivity.this);
@@ -284,11 +281,16 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             case R.id.ETMileage:
                 if (hasFocus) {
 
-                    if (FuelQty > 0 && Kms > 0 && isFullTank) {
+                    double prevKm = readingList.get(readingList.size() - 1).getKilometers();
+                    if(prevKm <=0)
+                    {
+                        ETMileage.setText(String.valueOf(0));
+                    }
+                    else if (FuelQty > 0 && Kms > 0 && prevKm > 0 && isFullTank) {
                         try {
-                            double prevKm = readingList.get(readingList.size() - 1).getKilometers();
+
                             Mileage = (Kms - prevKm) / FuelQty;
-                            ETMileage.setText(String.valueOf(Mileage));
+                            ETMileage.setText(String.format("%.2f",Mileage));
                         }
                         catch (Exception ex)
                         {
@@ -337,10 +339,14 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         if(isChecked)
         {
             isFullTank = true;
+            ETMileage.setEnabled(true);
+            ETMileage.setBackgroundColor(Color.WHITE);
         }
         else
         {
             isFullTank = false;
+            ETMileage.setEnabled(false);
+            ETMileage.setBackgroundColor(Color.LTGRAY);
         }
     }
 }

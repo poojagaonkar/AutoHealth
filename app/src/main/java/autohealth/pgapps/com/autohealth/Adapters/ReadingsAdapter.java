@@ -53,7 +53,7 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
         holder.TVFuelQty.setText("Fuel quantity: "+String.valueOf(data.getFuelqty()));
         holder.TVFuelCost.setText("Fuel cost: "+ String.valueOf(data.getFuelCost()));
         holder.TVTotalCost.setText("Total cost: "+String.valueOf(data.getTotalCost()));
-        holder.TVMileage.setText("Mileage: "+ String.valueOf(data.getMileage()));
+        holder.TVMileage.setText("Mileage: "+ String.format("%.2f", data.getMileage()));
 
         Boolean isFull = data.isFullTank();
         if(isFull)
