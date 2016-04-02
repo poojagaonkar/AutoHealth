@@ -27,11 +27,14 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.XAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,7 +49,7 @@ import autohealth.pgapps.com.autohealth.Models.ChildInfoModel;
 
 public class ReportActivty extends AppCompatActivity{
 
-    private LineChart[] mCharts = new LineChart[2];
+    private LineChart mChart;
     private Typeface mTf;
     private DatabaseHandler dbHandler;
     private List<ChildInfoModel> readingList;
@@ -60,65 +63,59 @@ public class ReportActivty extends AppCompatActivity{
 
         dbHandler = new DatabaseHandler(this);
         readingList = dbHandler.getAllReadings();
-        mCharts[0] = (LineChart) findViewById(R.id.chart1);
-        mCharts[1] = (LineChart) findViewById(R.id.chart2);
+        mChart = (LineChart) findViewById(R.id.chart1);
+
 
 
         LineData data = getData(readingList.size(), 100);
         data.setValueTypeface(mTf);
 
-        for (int i = 0; i < mCharts.length; i++)
-            // add some transparency to the color with "& 0x90FFFFFF"
-            setupChart(mCharts[i], data, mColors[i % mColors.length]);
+        setupChart(mChart, data, Color.WHITE);
+
+
     }
 
-    private int[] mColors = new int[] {
-            Color.rgb(137, 230, 81),
-            Color.rgb(240, 240, 30),
 
-    };
 
     private void setupChart(LineChart chart, LineData data, int color) {
 
-        // no description text
+        chart.setData(data);
+        // - X Axis
+        XAxis xAxis = chart.getXAxis();
+
+        xAxis.setTextSize(12f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextColor(ColorTemplate.getHoloBlue());
+        xAxis.setEnabled(true);
+        xAxis.disableGridDashedLine();
+        xAxis.setDrawGridLines(false);
+        xAxis.setAvoidFirstLastClipping(true);
+
+        // - Y Axis
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.removeAllLimitLines();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+
+        leftAxis.setAxisMinValue(0f); // to set minimum yAxis
+        leftAxis.setStartAtZero(false);
+        leftAxis.enableGridDashedLine(10f, 10f, 0f);
+        leftAxis.setDrawLimitLinesBehindData(true);
+        leftAxis.setDrawGridLines(true);
+        chart.getAxisRight().setEnabled(false);
+
         chart.setDescription("");
-        chart.setNoDataTextDescription("You need to provide data for the chart.");
-
-        // mChart.setDrawHorizontalGrid(false);
-        //
-        // enable / disable grid background
-        chart.setDrawGridBackground(false);
-//        chart.getRenderer().getGridPaint().setGridColor(Color.WHITE & 0x70FFFFFF);
-
+        chart.setNoDataTextDescription("Auto Health");
         // enable touch gestures
         chart.setTouchEnabled(true);
-
-        // enable scaling and dragging
+         // enable scaling and dragging
         chart.setDragEnabled(true);
         chart.setScaleEnabled(true);
-
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(false);
 
-        chart.setBackgroundColor(color);
-
-        // set custom chart offsets (automatic offset calculation is hereby disabled)
-        chart.setViewPortOffsets(10, 0, 10, 0);
-
-        // add data
-        chart.setData(data);
-
-        // get the legend (only possible after setting data)
-        Legend l = chart.getLegend();
-        l.setEnabled(false);
-
-        chart.getAxisLeft().setEnabled(false);
-        chart.getAxisRight().setEnabled(false);
-
-        chart.getXAxis().setEnabled(false);
-
-        // animate calls invalidate()...
         chart.animateX(2500);
+
     }
 
     private LineData getData(int count, float range) {
@@ -168,17 +165,17 @@ public class ReportActivty extends AppCompatActivity{
         LineDataSet set1 = new LineDataSet(yVals, "Fuel Cost");
         set1.setLineWidth(1.75f);
         set1.setCircleRadius(3f);
-        set1.setColor(Color.WHITE);
-        set1.setCircleColor(Color.WHITE);
-        set1.setHighLightColor(Color.WHITE);
+        set1.setColor(Color.GREEN);
+        set1.setCircleColor(Color.GREEN);
+        set1.setHighLightColor(Color.GREEN);
         set1.setDrawValues(true);
 
         LineDataSet set2 = new LineDataSet(yMileage, "Mileage");
         set1.setLineWidth(1.75f);
         set1.setCircleRadius(3f);
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-        set1.setHighLightColor(Color.BLACK);
+        set1.setColor(Color.RED);
+        set1.setCircleColor(Color.RED);
+        set1.setHighLightColor(Color.RED);
         set1.setDrawValues(true);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();

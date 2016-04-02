@@ -18,7 +18,8 @@
         </activity>
         <activity
             android:name=".ReportActivty"
-            android:label="@string/title_activity_report_activty" >
+            android:label="@string/title_activity_report_activty"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 
