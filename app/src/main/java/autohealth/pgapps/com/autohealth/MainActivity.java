@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                     public void onClick(View view) {
 
                         dialog.dismiss();
-                        dialog = null;
+                        dialog.cancel();
                     }
                 });
                 btnSave.setOnClickListener(new View.OnClickListener() {
@@ -149,8 +150,14 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                         FuelQty = Double.parseDouble(ETFuelQty.getText().toString());
                         FuelCost = Double.parseDouble(ETFuelCost.getText().toString());
                         TotalCost = Double.parseDouble(ETTotalCost.getText().toString());
-                        Mileage = Double.parseDouble(ETMileage.getText().toString());
 
+                        if(isFullTank) {
+                            Mileage = Double.parseDouble(ETMileage.getText().toString());
+                        }
+                        else
+                        {
+                            Mileage = 0;
+                        }
 
                         if (Kms <= 0) {
                             AlertDialog.Builder mAlert = new AlertDialog.Builder(MainActivity.this);
@@ -177,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                                 mAdapter.notifyDataSetChanged();
                                 mRecyclerView.setAdapter(mAdapter);
                                 dialog.dismiss();
-                                dialog = null;
+                                dialog.cancel();
                             }
 
 
@@ -281,7 +288,28 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             case R.id.ETMileage:
                 if (hasFocus) {
 
-                    double prevKm = readingList.get(readingList.size() - 1).getKilometers();
+                    List<ChildInfoModel> tempFullList = new ArrayList<ChildInfoModel>();
+                    List<ChildInfoModel> tempNonFullList = new ArrayList<ChildInfoModel>();
+                    for(ChildInfoModel mModel : readingList)
+                    {
+                        if(mModel.isFullTank() ==true)
+                        {
+                            tempFullList.add(mModel);
+                        }
+                        else
+                        {
+                            tempNonFullList.add(mModel);
+                        }
+                    }
+                    double mTotalfuelQty = 0;
+                    if(tempNonFullList.size()>0) {
+                        for (ChildInfoModel mModel2 : tempNonFullList) {
+                            mTotalfuelQty = mTotalfuelQty + mModel2.getFuelqty();
+                        }
+                    }
+
+
+                    double prevKm = tempFullList.get(0).getKilometers();
                     if(prevKm <=0)
                     {
                         ETMileage.setText(String.valueOf(0));
@@ -289,6 +317,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                     else if (FuelQty > 0 && Kms > 0 && prevKm > 0 && isFullTank) {
                         try {
 
+                            if(mTotalfuelQty >0)
+                            {
+                                FuelQty = FuelQty + mTotalfuelQty;
+                            }
                             Mileage = (Kms - prevKm) / FuelQty;
                             ETMileage.setText(String.format("%.2f",Mileage));
                         }
