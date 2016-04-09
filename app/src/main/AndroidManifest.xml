@@ -19,7 +19,11 @@
         <activity
             android:name=".ReportActivty"
             android:label="@string/title_activity_report_activty"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".NewRecordActivity"
+            android:label="@string/title_activity_new_record" >
         </activity>
     </application>
 
