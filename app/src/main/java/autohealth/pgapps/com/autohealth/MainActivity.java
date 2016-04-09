@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ import autohealth.pgapps.com.autohealth.Models.ChildInfoModel;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  RecyclerView mRecyclerView;
+    private  ListView mRecyclerView;
     private ImageButton btnAdd;
     private LinearLayoutManager mLinearManager;
     private AlertDialog dialog;
@@ -62,13 +63,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (RecyclerView)findViewById(R.id.mRecyclerView);
+        mRecyclerView = (ListView)findViewById(R.id.mRecyclerView);
         btnAdd = (ImageButton)findViewById(R.id.btnAdd);
         btnReport = (ImageButton)findViewById(R.id.btnReport);
         noItemLayout = (RelativeLayout)findViewById(R.id.relLayoutDefault);
 
         mLinearManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLinearManager);
+       // mRecyclerView.setLayoutManager(mLinearManager);
 
         dbHandler = new DatabaseHandler(this);
 

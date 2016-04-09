@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.TextView;
 
@@ -23,7 +24,91 @@ import autohealth.pgapps.com.autohealth.R;
 /**
  * Created by HomePC on 13-03-16.
  */
-public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewHolder> {
+public class ReadingsAdapter extends BaseAdapter{
+
+    private Activity mContext;
+    private List<ChildInfoModel> readingList;
+    public TextView TVKms;
+    public TextView TVFuelQty;
+    public TextView TVFuelCost;
+    public TextView TVTotalCost;
+    public TextView TVMileage;
+    public TextView TVFullTank;
+    public TextView TVDate;
+
+    public ReadingsAdapter(Activity mainActivity, List<ChildInfoModel> readingList) {
+
+        this.mContext = mainActivity;
+        this.readingList = readingList;
+        Collections.reverse(this.readingList);
+    }
+
+    @Override
+    public int getCount() {
+        return readingList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_card_layout, parent, false);
+        TVKms = (TextView)itemView.findViewById(R.id.TVKms);
+        TVFuelQty = (TextView)itemView.findViewById(R.id.TVFuelQty);
+        TVFuelCost =(TextView)itemView.findViewById(R.id.TVFuelCost);
+        TVTotalCost = (TextView)itemView.findViewById(R.id.TVTotalCost);
+        TVMileage =(TextView)itemView.findViewById(R.id.TVMileage);
+        TVFullTank =(TextView)itemView.findViewById(R.id.TVFullTank);
+        TVDate = (TextView)itemView.findViewById(R.id.TVDate);
+
+        ChildInfoModel data = readingList.get(position);
+
+        TVKms.setText("Kilometers: "+String.valueOf(data.getKilometers()));
+        TVFuelQty.setText("Fuel quantity: "+String.valueOf(data.getFuelqty()));
+        TVFuelCost.setText("Fuel cost: "+ String.valueOf(data.getFuelCost()));
+        TVTotalCost.setText("Total cost: "+String.valueOf(data.getTotalCost()));
+        TVMileage.setText("Mileage: "+ String.format("%.2f", data.getMileage()));
+
+        Boolean isFull = data.isFullTank();
+        if(isFull)
+        {
+            TVFullTank.setText("Full Tank: "+"Yes");
+            TVFullTank.setTextColor(Color.GREEN);
+        }
+        else
+        {
+            TVFullTank.setText("Full Tank: "+"No");
+            TVFullTank.setTextColor(Color.RED);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        try {
+            Date creationDate = sdf.parse(data.getCreatedDate());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(creationDate);
+            int mYear = cal.get(Calendar.YEAR);
+            int mMonth = cal.get(Calendar.MONTH) + 1;
+            int mDate = cal.get(Calendar.DAY_OF_MONTH);
+
+            TVDate.setText("Date: "+ String.valueOf(mDate) +"/" + String.valueOf(mMonth)+"/" + String.valueOf(mYear));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return itemView;
+    }
+} 
+/*RecyclerView.Adapter <ReadingsAdapter.ViewHolder> {
 
     private Activity mContext;
     private List<ChildInfoModel> readingList;
@@ -49,22 +134,22 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         ChildInfoModel data = readingList.get(position);
-        holder.TVKms.setText("Kilometers: "+String.valueOf(data.getKilometers()));
-        holder.TVFuelQty.setText("Fuel quantity: "+String.valueOf(data.getFuelqty()));
-        holder.TVFuelCost.setText("Fuel cost: "+ String.valueOf(data.getFuelCost()));
-        holder.TVTotalCost.setText("Total cost: "+String.valueOf(data.getTotalCost()));
-        holder.TVMileage.setText("Mileage: "+ String.format("%.2f", data.getMileage()));
+        TVKms.setText("Kilometers: "+String.valueOf(data.getKilometers()));
+        TVFuelQty.setText("Fuel quantity: "+String.valueOf(data.getFuelqty()));
+        TVFuelCost.setText("Fuel cost: "+ String.valueOf(data.getFuelCost()));
+        TVTotalCost.setText("Total cost: "+String.valueOf(data.getTotalCost()));
+        TVMileage.setText("Mileage: "+ String.format("%.2f", data.getMileage()));
 
         Boolean isFull = data.isFullTank();
         if(isFull)
         {
-            holder.TVFullTank.setText("Full Tank: "+"Yes");
-            holder.TVFullTank.setTextColor(Color.GREEN);
+            TVFullTank.setText("Full Tank: "+"Yes");
+            TVFullTank.setTextColor(Color.GREEN);
         }
         else
         {
-            holder.TVFullTank.setText("Full Tank: "+"No");
-            holder.TVFullTank.setTextColor(Color.RED);
+            TVFullTank.setText("Full Tank: "+"No");
+            TVFullTank.setTextColor(Color.RED);
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -76,7 +161,7 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
             int mMonth = cal.get(Calendar.MONTH) + 1;
             int mDate = cal.get(Calendar.DAY_OF_MONTH);
 
-            holder.TVDate.setText("Date: "+ String.valueOf(mDate) +"/" + String.valueOf(mMonth)+"/" + String.valueOf(mYear));
+            TVDate.setText("Date: "+ String.valueOf(mDate) +"/" + String.valueOf(mMonth)+"/" + String.valueOf(mYear));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -113,4 +198,4 @@ public class ReadingsAdapter extends RecyclerView.Adapter <ReadingsAdapter.ViewH
         }
     }
 
-}
+}*/
