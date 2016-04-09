@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import autohealth.pgapps.com.autohealth.Adapters.ReadingsAdapter;
+import autohealth.pgapps.com.autohealth.Helpers.Constants;
 import autohealth.pgapps.com.autohealth.Helpers.DatabaseHandler;
 import autohealth.pgapps.com.autohealth.Helpers.DialogHelper;
 import autohealth.pgapps.com.autohealth.Models.ChildInfoModel;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     private  DateFormat dateFormat;
     private String currentDate;
     private double lastKmReading;
+    private Constants mConstants;
+    private List<ChildInfoModel> tempFullList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         dbHandler = new DatabaseHandler(this);
 
         readingList = dbHandler.getAllReadings();
+        mConstants = new Constants();
 
         if(readingList.size() >0)
         {
@@ -80,6 +84,22 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             mAdapter = new ReadingsAdapter(MainActivity.this, readingList);
             mRecyclerView.setAdapter(mAdapter);
             lastKmReading = readingList.get(0).getKilometers();
+            tempFullList = new ArrayList<ChildInfoModel>();
+           // mConstants.fullTankList = new ArrayList<ChildInfoModel>();
+            for(ChildInfoModel mModel : readingList)
+            {
+                if(mModel.isFullTank() ==true)
+                {
+                    tempFullList.add(mModel);
+                    mConstants.setFullTankList(tempFullList);
+                }
+                /*else
+                {
+                    List<ChildInfoModel> mList = new ArrayList<ChildInfoModel>();
+                    mList.add(mModel);
+                    mConstants.setFullTankList(mList);
+                }*/
+            }
         }
         else
         {
@@ -288,22 +308,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             case R.id.ETMileage:
                 if (hasFocus) {
 
-                    List<ChildInfoModel> tempFullList = new ArrayList<ChildInfoModel>();
-                    List<ChildInfoModel> tempNonFullList = new ArrayList<ChildInfoModel>();
-                    for(ChildInfoModel mModel : readingList)
-                    {
-                        if(mModel.isFullTank() ==true)
-                        {
-                            tempFullList.add(mModel);
-                        }
-                        else
-                        {
-                            tempNonFullList.add(mModel);
-                        }
-                    }
+
                     double mTotalfuelQty = 0;
-                    if(tempNonFullList.size()>0) {
-                        for (ChildInfoModel mModel2 : tempNonFullList) {
+                    if(mConstants.fullTankList.size()>0) {
+                        for (ChildInfoModel mModel2 : mConstants.fullTankList) {
                             mTotalfuelQty = mTotalfuelQty + mModel2.getFuelqty();
                         }
                     }

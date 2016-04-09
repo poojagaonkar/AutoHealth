@@ -40,11 +40,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import autohealth.pgapps.com.autohealth.Custom.MyMarkerView;
+import autohealth.pgapps.com.autohealth.Helpers.Constants;
 import autohealth.pgapps.com.autohealth.Helpers.DatabaseHandler;
+import autohealth.pgapps.com.autohealth.Helpers.DialogHelper;
 import autohealth.pgapps.com.autohealth.Models.ChildInfoModel;
 
 public class ReportActivty extends AppCompatActivity{
@@ -53,6 +56,8 @@ public class ReportActivty extends AppCompatActivity{
     private Typeface mTf;
     private DatabaseHandler dbHandler;
     private List<ChildInfoModel> readingList;
+    private DialogHelper dHelper;
+    private  Constants mConstants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,16 +66,24 @@ public class ReportActivty extends AppCompatActivity{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_report_activty);
 
+        mConstants = new Constants();
+
         dbHandler = new DatabaseHandler(this);
-        readingList = dbHandler.getAllReadings();
+        readingList = mConstants.GetFullListTank();
         mChart = (LineChart) findViewById(R.id.chart1);
+        dHelper = new DialogHelper();
 
 
 
-        LineData data = getData(readingList.size(), 100);
-        data.setValueTypeface(mTf);
-
-        setupChart(mChart, data, Color.WHITE);
+         if(readingList.size()> 0 || readingList!=null) {
+         LineData data = getData(readingList.size(), 100);
+         data.setValueTypeface(mTf);
+         setupChart(mChart, data, Color.WHITE);
+        }
+        else {
+             dHelper.CreateErrorDialog(this,"Message","No readings to display chart");
+             ReportActivty.this.finish();
+         }
 
 
     }
@@ -102,8 +115,9 @@ public class ReportActivty extends AppCompatActivity{
         leftAxis.enableGridDashedLine(10f, 10f, 0f);
         leftAxis.setDrawLimitLinesBehindData(true);
         leftAxis.setDrawGridLines(true);
-        chart.getAxisRight().setEnabled(false);
 
+
+        chart.getAxisRight().setEnabled(false);
         chart.setDescription("");
         chart.setNoDataTextDescription("Auto Health");
         // enable touch gestures
@@ -155,6 +169,7 @@ public class ReportActivty extends AppCompatActivity{
             yVals.add(new Entry(val, i));
         }
 
+
         for (int i = 0; i < count; i++) {
             ChildInfoModel data = readingList.get(i);
             float val = (float)data.getMileage();
@@ -170,6 +185,7 @@ public class ReportActivty extends AppCompatActivity{
         set1.setHighLightColor(Color.GREEN);
         set1.setDrawValues(true);
 
+
         LineDataSet set2 = new LineDataSet(yMileage, "Mileage");
         set1.setLineWidth(1.75f);
         set1.setCircleRadius(3f);
@@ -183,6 +199,7 @@ public class ReportActivty extends AppCompatActivity{
         dataSets.add(set2);
 
         // create a data object with the datasets
+
         LineData data = new LineData(xVals, dataSets);
 
         return data;
