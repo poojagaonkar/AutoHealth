@@ -12,6 +12,16 @@ public class Constants {
 
     public static List<ChildInfoModel> fullTankList;
 
+    public static List<ChildInfoModel> getNonFullTankList() {
+        return nonFullTankList;
+    }
+
+    public static void setNonFullTankList(List<ChildInfoModel> nonFullTankList) {
+        Constants.nonFullTankList = nonFullTankList;
+    }
+
+    public static List<ChildInfoModel> nonFullTankList;
+
     public static List<ChildInfoModel> getFullTankList() {
         return fullTankList;
     }
@@ -23,5 +33,9 @@ public class Constants {
     public List<ChildInfoModel> GetFullListTank()
     {
         return  getFullTankList();
+    }
+    public List<ChildInfoModel> GetNonFullListTank()
+    {
+        return  getNonFullTankList();
     }
 }

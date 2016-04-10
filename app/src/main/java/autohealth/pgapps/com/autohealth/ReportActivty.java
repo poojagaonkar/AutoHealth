@@ -126,7 +126,7 @@ public class ReportActivty extends AppCompatActivity{
         chart.setDragEnabled(true);
         chart.setScaleEnabled(true);
         // if disabled, scaling can be done on x- and y-axis separately
-        chart.setPinchZoom(false);
+        chart.setPinchZoom(true);
 
         chart.animateX(2500);
 

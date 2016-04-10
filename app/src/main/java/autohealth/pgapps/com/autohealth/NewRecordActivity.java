@@ -41,6 +41,7 @@ public class NewRecordActivity extends AppCompatActivity implements View.OnFocus
     private List<ChildInfoModel> readingList;
     private Constants mConstants;
     private List<ChildInfoModel> tempFullList;
+    private  List<ChildInfoModel> nonFullTankList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +72,7 @@ public class NewRecordActivity extends AppCompatActivity implements View.OnFocus
         ETKM.setOnFocusChangeListener(this);
         ETFuelCost.setOnFocusChangeListener(this);
         ETFuelQty.setOnFocusChangeListener(this);
-        ETMileage.setOnFocusChangeListener(this);
+      //  ETMileage.setOnFocusChangeListener(this);
         ETTotalCost.setOnFocusChangeListener(this);
         chkfullTank.setOnCheckedChangeListener(NewRecordActivity.this);
 
@@ -79,15 +80,18 @@ public class NewRecordActivity extends AppCompatActivity implements View.OnFocus
         Calendar cal = Calendar.getInstance();
         currentDate = dateFormat.format(cal.getTime());
         tempFullList = new ArrayList<ChildInfoModel>();
-
-        tempFullList = new ArrayList<ChildInfoModel>();
-        // mConstants.fullTankList = new ArrayList<ChildInfoModel>();
+        nonFullTankList = new ArrayList<ChildInfoModel>();
         for(ChildInfoModel mModel : readingList)
         {
             if(mModel.isFullTank() ==true)
             {
                 tempFullList.add(mModel);
                 mConstants.setFullTankList(tempFullList);
+            }
+            else
+            {
+                nonFullTankList.add(mModel);
+                mConstants.setNonFullTankList(nonFullTankList);
             }
 
         }
@@ -221,7 +225,7 @@ public class NewRecordActivity extends AppCompatActivity implements View.OnFocus
                 }
 
                 break;
-            case R.id.ETMileage:
+           /* case R.id.ETMileage:
                 if (hasFocus) {
 
 
@@ -261,7 +265,7 @@ public class NewRecordActivity extends AppCompatActivity implements View.OnFocus
 
 
 
-                break;
+                break;*/
             case R.id.ETTotalCost:
 
                 if (hasFocus) {
@@ -291,18 +295,67 @@ public class NewRecordActivity extends AppCompatActivity implements View.OnFocus
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+        double mTotalfuelQty = 0;
+        double prevKm = 0;
         if(isChecked)
         {
             isFullTank = true;
             ETMileage.setEnabled(true);
             ETMileage.setBackgroundColor(Color.WHITE);
+
+            if(mConstants.fullTankList.size()>0) {
+
+                int readFullId = mConstants.fullTankList.get(mConstants.fullTankList.size()-1).getID();
+                int readNonFullId = mConstants.nonFullTankList.get(mConstants.nonFullTankList.size()-1).getID();
+                mTotalfuelQty = mConstants.fullTankList.get(mConstants.fullTankList.size()-1).getFuelqty();
+                for (ChildInfoModel mModel2 : mConstants.nonFullTankList) {
+
+                    if(mModel2.getID() > readFullId) {
+                        mTotalfuelQty = mTotalfuelQty + mModel2.getFuelqty();
+                    }
+                }
+
+
+                /*for (ChildInfoModel mModel2 : mConstants.nonFullTankList) {
+                    mTotalfuelQty = mTotalfuelQty + mModel2.getFuelqty();
+                }*/
+            }
+
+
+             prevKm = tempFullList.get(tempFullList.size()-1).getKilometers();
+
+            if(prevKm <=0)
+            {
+                ETMileage.setText(String.valueOf(0));
+            }
+            else if (FuelQty > 0 && Kms > 0 && prevKm > 0 && isFullTank) {
+                try {
+
+                    if (mTotalfuelQty > 0) {
+                        if(readingList.get(readingList.size()-1).isFullTank() == true)
+                        {
+                            FuelQty = mTotalfuelQty;
+                        }
+                        else
+                        FuelQty = FuelQty + mTotalfuelQty;
+                    }
+                    Mileage = (Kms - prevKm) / FuelQty;
+                    ETMileage.setText(String.format("%.2f", Mileage));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         else
         {
             isFullTank = false;
             ETMileage.setEnabled(false);
             ETMileage.setBackgroundColor(Color.LTGRAY);
+            Mileage =0;
+            FuelQty = Double.parseDouble(ETFuelQty.getText().toString());
+            prevKm = 0;
+            mTotalfuelQty = 0;
+            ETMileage.setText("");
         }
     }
 }
